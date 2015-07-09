@@ -1,0 +1,15 @@
+<resources>
+    <string name="app_name">Nice Drawer</string>
+    <string name="drawer_open">Menu opened</string>
+    <string name="drawer_close">Menu closed</string>
+    <string name="action_settings">Settings</string>
+    <string name="settings">Tabs</string>
+    <string name="myaccount">My card</string>
+    <string name="stats">Stats</string>
+    <string name="search">Search</string>
+    <string name="nation">Nations</string>
+    <string name="action_search">Search</string>
+    <string name="action_filter">Filter</string>
+
+    <string name="country">country</string>
+</resources>
