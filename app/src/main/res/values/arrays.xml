@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="textSize">
+        <item name="small">Small</item>
+        <item name="norm">Normal</item>
+        <item name="large">large</item>
+        <item name="huge">Huge</item>
+    </string-array>
+    <string-array name="textSizeValues">
+        <item name="small">small</item>
+        <item name="norm">norm</item>
+        <item name="large">large</item>
+        <item name="huge">huge</item>
+    </string-array>
+    <string-array name="video">
+        <item name="norm">Never</item>
+        <item name="large">On Wi-Fi only</item>
+        <item name="huge">On Wi-Fi or mobile network</item>
+    </string-array>
+    <string-array name="videoValues">
+        <item name="1">Never</item>
+        <item name="2">On Wi-Fi only</item>
+        <item name="3">On Wi-Fi or mobile network</item>
+    </string-array>
+
+    <string-array name="statTopic">
+        <item name="a">Where I last exited</item>
+        <item name="b">Top Stories</item>
+        <item name="c">My News</item>
+        <item name="d">Most Read</item>
+        <item name="e">Most Watched</item>
+        <item name="f">Live</item>
+    </string-array>
+    <string-array name="statTopicValues">
+        <item name="a">Where I last exited</item>
+        <item name="b">Top Stories</item>
+        <item name="c">My News</item>
+        <item name="d">Most Read</item>
+        <item name="e">Most Watched</item>
+        <item name="f">Live</item>
+    </string-array>
+    <string-array name="widgetUpdate">
+        <item name="1">Every hour</item>
+        <item name="7">Every two hours</item>
+        <item name="3">Every three hours</item>
+    </string-array>
+    <string-array name="widgetUpdateValues">
+        <item name="1">10</item>
+        <item name="7">20</item>
+        <item name="3">30</item>
+    </string-array>
+    <string-array name="backSyncFreq">
+        <item name="12">Every hour</item>
+        <item name="13">Every three hours</item>
+        <item name="15">Every six hours</item>
+        <item name="16">Daily</item>
+    </string-array>
+    <string-array name="backSyncFreqValues">
+        <item name="12">12</item>
+        <item name="13">13</item>
+        <item name="15">15</item>
+        <item name="16">16</item>
+    </string-array>
+
+
+</resources>

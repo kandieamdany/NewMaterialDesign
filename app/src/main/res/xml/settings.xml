@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+    <PreferenceCategory android:title="@string/pref_general">
+        <CheckBoxPreference
+            android:defaultValue="false"
+            android:key="prefSendReport"
+            android:summary="@string/pref_send_report_summary"
+            android:title="@string/pref_send_report" >
+        </CheckBoxPreference>
+        <CheckBoxPreference
+            android:defaultValue="false"
+            android:key="prefSendCarousel"
+            android:summary="@string/pref_carousel_display_summary"
+            android:title="@string/pref_carousel_display" >
+        </CheckBoxPreference>
+        <ListPreference
+            android:key="prefSyncTextSize"
+            android:entries="@array/textSize"
+            android:summary="@string/pref_text_size_summary"
+            android:entryValues="@array/textSizeValues"
+            android:title="@string/pref_text_size" />
+
+        <CheckBoxPreference
+            android:defaultValue="false"
+            android:key="prefSendAccess"
+            android:summary="@string/pref_accessibility_summary"
+            android:title="@string/pref_accessibility" >
+        </CheckBoxPreference>
+
+        <ListPreference
+            android:key="prefSyncVideo"
+            android:entries="@array/video"
+            android:summary="@string/pref_allow_videos_summary"
+            android:entryValues="@array/videoValues"
+            android:title="@string/pref_allow_videos"
+            />
+        <ListPreference
+            android:key="prefStartTopic"
+            android:entries="@array/statTopic"
+            android:summary="@string/pref_start_topic_summary"
+            android:entryValues="@array/statTopicValues"
+            android:title="@string/pref_allow_videos"
+            />
+
+
+    </PreferenceCategory>
+    <PreferenceCategory android:title="@string/notifications">
+        <CheckBoxPreference
+            android:defaultValue="false"
+            android:key="prefBreakingNews"
+            android:summary="@string/pref_breakingnews_summary"
+            android:title="@string/pref_breakingnews" />
+        <CheckBoxPreference
+            android:defaultValue="true"
+            android:key="prefBreakingNewsSound"
+            android:summary="@string/pref_breakingNews_summary"
+            android:title="@string/pref_breakingNews"
+            android:enabled="false"/>
+    </PreferenceCategory>
+    <PreferenceCategory android:title="@string/privacy">
+        <CheckBoxPreference
+            android:defaultValue="true"
+            android:key="prefShareStatistics"
+            android:summary="@string/pref_shareStatistics_summary"
+            android:title="@string/pref_shareStatistics"
+            />
+
+        <ListPreference
+            android:key="prefWidgetUpdate"
+            android:entries="@array/widgetUpdate"
+            android:summary="@string/pref_start_topic_summary"
+            android:entryValues="@array/widgetUpdateValues"
+            android:title="@string/pref_allow_videos"
+            />
+
+    </PreferenceCategory>
+    <PreferenceCategory android:title="@string/data">
+        <CheckBoxPreference
+            android:defaultValue="true"
+            android:key="prefBackSync"
+            android:summary="@string/pref_backSync_summary"
+            android:title="@string/pref_backSync"
+            />
+        <ListPreference
+            android:key="prefBackSyncFreq"
+            android:entries="@array/backSyncFreq"
+            android:summary="@string/pref_backsync_sm"
+            android:entryValues="@array/backSyncFreqValues"
+            android:title="@string/pref_allow_baskSync"
+            />
+        <CheckBoxPreference
+            android:defaultValue="false"
+            android:key="prefBackSyncMobile"
+            android:summary="@string/pref_backSyncMobile_summary"
+            android:title="@string/pref_backSyncMobile"
+            />
+    </PreferenceCategory>
+    <PreferenceCategory android:title="@string/help">
+        <Preference
+            android:title="@string/prefs_category_help"
+              >
+            <intent android:action="android.intent.action.VIEW"
+                android:data="http://www.cnn.com" />
+        </Preference>
+
+    </PreferenceCategory>
+    <PreferenceCategory android:title="@string/termsandPrivacy">
+        <Preference
+            android:title="@string/prefs_category_use"
+            >
+            <intent android:action="android.intent.action.VIEW"
+                android:data="http://www.cnn.com" />
+        </Preference>
+        <Preference
+            android:title="@string/prefs_category_policy"
+            >
+            <intent android:action="android.intent.action.VIEW"
+                android:data="http://www.cnn.com" />
+        </Preference>
+
+    </PreferenceCategory>
+
+    <PreferenceCategory android:title="@string/about">
+        <Preference
+            android:title="@string/prefs_category_about"
+            android:summary="@string/version"
+            >
+        </Preference>
+
+    </PreferenceCategory>
+
+</PreferenceScreen>

@@ -68,6 +68,12 @@
         android:layout_height="wrap_content"
         android:text="@string/btn_enter"
         android:visibility="gone" />
+    <Button
+        android:id="@+id/btn_picasso"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:text="picasso"
+        android:visibility="gone" />
 
 
 </LinearLayout>

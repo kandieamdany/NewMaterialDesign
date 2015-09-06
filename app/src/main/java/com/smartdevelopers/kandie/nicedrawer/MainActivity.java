@@ -2,20 +2,17 @@ package com.smartdevelopers.kandie.nicedrawer;
 
 
 import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.os.AsyncTask;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.widget.Toolbar;
+
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.ImageView;
 
-import java.io.InputStream;
 
 
 public class MainActivity extends ActionBarActivity
@@ -30,7 +27,9 @@ public class MainActivity extends ActionBarActivity
     String user_name;
     String user_email;
     String user_photo_url;
-    Bitmap bitmap;
+
+    Fragment fragment;
+
 
 
     @Override
@@ -40,15 +39,13 @@ public class MainActivity extends ActionBarActivity
         mToolbar = (Toolbar) findViewById(R.id.toolbar_actionbar);
         setSupportActionBar(mToolbar);
 
-        //retrieving user data from intent
+        //settings default
+        PreferenceManager.setDefaultValues(this,R.xml.settings,false);
 
         intent=getIntent();
         user_name=intent.getStringExtra("username");
         user_email=intent.getStringExtra("mail");
         user_photo_url=intent.getStringExtra("picture");
-//        bitmap=intent.getParcelableExtra("picture");
-
-
 
 
         mNavigationDrawerFragment = (NavigationDrawerFragment)
@@ -57,7 +54,10 @@ public class MainActivity extends ActionBarActivity
         // Set up the drawer.
         mNavigationDrawerFragment.setup(R.id.fragment_drawer, (DrawerLayout) findViewById(R.id.drawer), mToolbar);
         // populate the navigation drawer
-        mNavigationDrawerFragment.setUserData(user_name, user_email,BitmapFactory.decodeResource(getResources(), R.drawable.avatar));
+
+            mNavigationDrawerFragment.setUserData(user_name, user_email, user_photo_url);
+
+
 
 //        mNavigationDrawerFragment.setUserData("John Doe", "johndoe@doe.com", BitmapFactory.decodeResource(getResources(), R.drawable.avatar));
     }
@@ -70,8 +70,14 @@ public class MainActivity extends ActionBarActivity
         String title=getString(R.string.app_name);
 
         switch (position) {
-            case 0: //search//todo
+            case 0: //Swipe Refresh Activity//todo
 
+                fragment=new SwipeListFragment();
+                fragment=getSupportFragmentManager().findFragmentByTag(SwipeListFragment.TAG);
+                if (fragment==null){
+                    fragment=new SwipeListFragment();
+                }
+                getSupportFragmentManager().beginTransaction().replace(R.id.container,fragment,SwipeListFragment.TAG).commit();
 
                 break;
             case 1: //stats
@@ -137,42 +143,52 @@ public class MainActivity extends ActionBarActivity
         // Handle action bar item clicks here. The action bar will
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
+
         int id = item.getItemId();
+        switch (id){
+            case R.id.action_refresh:Bundle data_Bundle=new Bundle();
+                data_Bundle.putInt("id", 0);
+                //Refresh content
+                break;
+
+            case R.id.action_settings:Bundle bundle=new Bundle();
+                bundle.putInt("id", 1);
+                Intent intent=new Intent(getApplicationContext(),com.smartdevelopers.kandie.nicedrawer.SettingsFragment.class);
+                intent.putExtras(bundle);
+                startActivity(intent);
+                //Settings
+//                fragment=new SettingsFragment();
+                break;
+            case R.id.action_help:Bundle bundle1=new Bundle();
+                bundle1.putInt("id", 2);
+                //Help
+
+                break;
+            case R.id.action_feedback:Bundle bundle2=new Bundle();
+                bundle2.putInt("id", 1);
+                //Feedback
+
+                break;
+            default:
+                break;
+
+        }
+        if(fragment!=null)
+            this.getSupportFragmentManager().beginTransaction().replace(R.id.container,fragment).commit();
+
+        else
+            Log.e("error", "cannot create fragment");
 
         //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
-        }
+//        if (id == R.id.action_settings) {
+//            return true;
+//        }
 
         return super.onOptionsItemSelected(item);
     }
 
 
-    //async task to process the profile photo
-    private class LoadProfileImage extends AsyncTask<String, Void, Bitmap> {
-        ImageView bmImage;
 
-        public LoadProfileImage(ImageView bmImage) {
-            this.bmImage = bmImage;
-        }
-
-        protected Bitmap doInBackground(String... urls) {
-            String urldisplay = urls[0];
-            Bitmap mIcon11 = null;
-            try {
-                InputStream in = new java.net.URL(urldisplay).openStream();
-                mIcon11 = BitmapFactory.decodeStream(in);
-            } catch (Exception e) {
-                Log.e("Error", e.getMessage());
-                e.printStackTrace();
-            }
-            return mIcon11;
-        }
-
-        protected void onPostExecute(Bitmap result) {
-            bmImage.setImageBitmap(result);
-        }
-    }
 
 
 }

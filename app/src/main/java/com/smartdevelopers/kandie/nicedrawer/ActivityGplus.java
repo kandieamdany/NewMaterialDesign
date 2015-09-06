@@ -26,6 +26,7 @@ import com.google.android.gms.common.api.ResultCallback;
 import com.google.android.gms.common.api.Status;
 import com.google.android.gms.plus.Plus;
 import com.google.android.gms.plus.model.people.Person;
+import com.squareup.picasso.Picasso;
 
 import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
@@ -53,18 +54,20 @@ public class ActivityGplus extends AppCompatActivity implements View.OnClickList
 
     private SignInButton btnSignIn;
 
-    private Button btnSignOut, btnRevokeAccess,btnEnter;
+    private Button btnSignOut, btnRevokeAccess,btnEnter,btnPicasso;
     private ImageView imgProfilePic;
     private TextView txtName, txtEmail;
     private LinearLayout llProfileLayout;
 
     Bitmap bitmap;
+    String personPhotoUrl;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.gplus_activity);
 
+        btnPicasso=(Button)findViewById(R.id.btn_picasso);
         btnSignIn = (SignInButton) findViewById(R.id.btn_sign_in);
         btnSignOut = (Button) findViewById(R.id.btn_sign_out);
         btnRevokeAccess = (Button) findViewById(R.id.btn_revoke_access);
@@ -79,6 +82,7 @@ public class ActivityGplus extends AppCompatActivity implements View.OnClickList
         btnSignOut.setOnClickListener(this);
         btnRevokeAccess.setOnClickListener(this);
         btnEnter.setOnClickListener(this);
+        btnPicasso.setOnClickListener(this);
 
         // Initializing google plus api client
         mGoogleApiClient = new GoogleApiClient.Builder(this)
@@ -119,7 +123,19 @@ public class ActivityGplus extends AppCompatActivity implements View.OnClickList
                 //enter to the main activity
                 enterMain();
                 break;
+            case R.id.btn_picasso:
+                showpicasso();
         }
+    }
+
+    private void showpicasso() {
+        Intent intent=new Intent(ActivityGplus.this,PicassoActivity.class);
+
+
+                intent.putExtra("picture", personPhotoUrl);
+
+                startActivity(intent);
+
     }
 
     private void enterMain() {
@@ -220,7 +236,7 @@ public class ActivityGplus extends AppCompatActivity implements View.OnClickList
         getProfileInformation();
 
         // Update the UI after signin
-//        updateUI(true);
+        updateUI(true);
 
     }
 
@@ -240,12 +256,15 @@ public class ActivityGplus extends AppCompatActivity implements View.OnClickList
             btnSignOut.setVisibility(View.VISIBLE);
             btnRevokeAccess.setVisibility(View.VISIBLE);
             btnEnter.setVisibility(View.VISIBLE);
+            btnPicasso.setVisibility(View.VISIBLE);
+
             llProfileLayout.setVisibility(View.VISIBLE);
         } else {
             btnSignIn.setVisibility(View.VISIBLE);
             btnSignOut.setVisibility(View.GONE);
             btnRevokeAccess.setVisibility(View.GONE);
             btnEnter.setVisibility(View.GONE);
+            btnPicasso.setVisibility(View.GONE);
             llProfileLayout.setVisibility(View.GONE);
         }
     }
@@ -259,7 +278,7 @@ public class ActivityGplus extends AppCompatActivity implements View.OnClickList
                 Person currentPerson = Plus.PeopleApi
                         .getCurrentPerson(mGoogleApiClient);
                 String personName = currentPerson.getDisplayName();
-                String personPhotoUrl = currentPerson.getImage().getUrl();
+                personPhotoUrl = currentPerson.getImage().getUrl();
                 String personGooglePlusProfile = currentPerson.getUrl();
                 String email = Plus.AccountApi.getAccountName(mGoogleApiClient);
 
@@ -277,7 +296,9 @@ public class ActivityGplus extends AppCompatActivity implements View.OnClickList
                         personPhotoUrl.length() - 2)
                         + PROFILE_PIC_SIZE;
 
-                new LoadProfileImage(imgProfilePic).execute(personPhotoUrl);
+//                new LoadProfileImage(imgProfilePic).execute(personPhotoUrl);
+
+                Picasso.with(this).load(personPhotoUrl).into(imgProfilePic);
 
 //                imgProfilePic.setDrawingCacheEnabled(true);
 //
@@ -291,7 +312,6 @@ public class ActivityGplus extends AppCompatActivity implements View.OnClickList
                 intent.putExtra("username",txtName.getText().toString());
                 intent.putExtra("mail",txtEmail.getText().toString());
                 intent.putExtra("picture", personPhotoUrl);
-
                 startActivity(intent);
 
 

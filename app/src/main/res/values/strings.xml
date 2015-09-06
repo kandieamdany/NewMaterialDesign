@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Nice Drawer</string>
+    <string name="app_name">materiale</string>
     <string name="drawer_open">Menu opened</string>
     <string name="drawer_close">Menu closed</string>
     <string name="action_settings">Settings</string>
@@ -18,4 +18,54 @@
     <string name="btn_revoke_access">Revoke Access</string>
     <string name="btn_enter">Enter Main</string>
     <string name="prof_pic">profile picture</string>
+
+    <string name="action_refresh">Refresh Content</string>
+    <string name="action_help">Help</string>
+    <string name="action_feedback">Send Feedback</string>
+
+    <string name="pref_general">General</string>
+    <string name="notifications">Notification</string>
+    <string name="pref_send_report">Compact layout</string>
+    <string name="pref_send_report_summary">See more stories per screen</string>
+    <string name="pref_carousel_display">Use Carousel Display</string>
+    <string name="pref_carousel_display_summary">Browse My News By Topic using horizontal carousels</string>
+    <string name="pref_text_size">Text Size</string>
+    <string name="pref_text_size_summary">Normal</string>
+    <string name="pref_accessibility">Accessibility</string>
+    <string name="pref_accessibility_summary">Select to enjoy an enhanced experience for users of assisting technology</string>
+    <string name="pref_allow_videos">Allow Videos to automatically play</string>
+    <string name="pref_allow_videos_summary">Never</string>
+    <string name="pref_start_topic_summary">Choose topics to start with</string>
+    <string name="pref_breakingnews_summary">Allow the BBC News app to send breaking news notifications directly to your device.</string>
+    <string name="pref_breakingnews">Breaking News Notifications</string>
+    <string name="pref_breakingNews_summary">Play a sound when receiving notifications. You \'ll also need to turn on your device\'s notification sounds.</string>
+    <string name="pref_breakingNews">Breaking News Sound</string>
+    <string name="privacy">Privacy</string>
+    <string name="pref_shareStatistics_summary">The BBC will only use this info to analyse and improve the srevices offered through this app.For more details see our Privacy policy.</string>
+    <string name="pref_shareStatistics">Share Statistics</string>
+    <string name="data">Data</string>
+    <string name="pref_backSync_summary">Download articles in the background for faster browsing</string>
+    <string name="pref_backSync">Background Syncing</string>
+    <string name="pref_allow_baskSync">BackGround sync freqeuncy</string>
+    <string name="pref_backsync_sm">Intervals upon which articles will download</string>
+    <string name="pref_backSyncMobile_summary">Turn this on and the app will use your mobile data to download articles inthe background.</string>
+    <string name="pref_backSyncMobile">Sync while on mobile network</string>
+    <string name="help">Help</string>
+    <string name="prefs_category_help">Help</string>
+    <string name="termsandPrivacy">Terms and Privacy</string>
+    <string name="prefs_category_use">Terms of Use</string>
+    <string name="prefs_category_policy">Privacy Policy</string>
+    <string name="about">About the app</string>
+    <string name="prefs_category_about">BBC News Version</string>
+    <string name="version">3.1.0.175 GNL[121]- 10/07/2015 10:30:16</string>
+
+    <string name="swipeRefresh">Swipe</string>
+
+    <string name="menu_color_scheme">Color scheme</string>
+    <string name="menu_color_scheme_1">Scheme #1</string>
+    <string name="menu_color_scheme_2">Scheme #2</string>
+    <string name="menu_color_scheme_3">Scheme #3</string>
+    <string name="menu_refresh">refresh</string>
+
+
 </resources>
