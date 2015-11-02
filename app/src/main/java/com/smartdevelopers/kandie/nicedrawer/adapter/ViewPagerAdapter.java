@@ -16,6 +16,9 @@ import android.support.v4.app.FragmentStatePagerAdapter;
 
 import com.smartdevelopers.kandie.nicedrawer.TabOne;
 import com.smartdevelopers.kandie.nicedrawer.TabTwo;
+import com.smartdevelopers.kandie.nicedrawer.newsTabs.TopStoriesFragment;
+import com.smartdevelopers.kandie.nicedrawer.newsTabs.TrendingFragment;
+import com.smartdevelopers.kandie.nicedrawer.newsTabs.UpdateFragment;
 
 /**
  * Created by 4331 on 09/07/2015.
@@ -41,14 +44,20 @@ public class ViewPagerAdapter extends FragmentStatePagerAdapter {
 
         if(position == 0) // if the position is 0 we are returning the First tab
         {
-            TabOne tabOne = new TabOne();
-            return tabOne;
+            UpdateFragment updateFragment = new UpdateFragment();
+            return updateFragment;
+
+        }
+        else if(position==1) // As we are having 2 tabs if the position is now 0 it must be 1 so we are returning second tab
+        {
+            TopStoriesFragment topStoriesFragment = new TopStoriesFragment();
+            return topStoriesFragment;
 
         }
         else             // As we are having 2 tabs if the position is now 0 it must be 1 so we are returning second tab
         {
-            TabTwo tab2 = new TabTwo();
-            return tab2;
+            TrendingFragment trendingFragment = new TrendingFragment();
+            return trendingFragment;
 
         }
 

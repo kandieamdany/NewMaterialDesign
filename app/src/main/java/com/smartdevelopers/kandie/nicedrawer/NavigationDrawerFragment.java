@@ -1,12 +1,9 @@
 package com.smartdevelopers.kandie.nicedrawer;
 
 import android.app.Activity;
-
-import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.BitmapShader;
 import android.graphics.Canvas;
 import android.graphics.ColorFilter;
@@ -16,25 +13,26 @@ import android.graphics.Rect;
 import android.graphics.RectF;
 import android.graphics.Shader;
 import android.graphics.drawable.Drawable;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
-import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.squareup.picasso.Picasso;
+import com.devspark.robototextview.widget.*;
+import com.devspark.robototextview.widget.RobotoTextView;
+import com.nostra13.universalimageloader.core.DisplayImageOptions;
+import com.nostra13.universalimageloader.core.ImageLoader;
+import com.nostra13.universalimageloader.core.assist.ImageScaleType;
 
-import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -129,10 +127,19 @@ public class NavigationDrawerFragment extends Fragment implements NavigationDraw
 
     public List<NavigationItem> getMenu() {
         List<NavigationItem> items = new ArrayList<NavigationItem>();
-        items.add(new NavigationItem(getString(R.string.search), getResources().getDrawable(R.drawable.ic_action_search)));
-        items.add(new NavigationItem(getString(R.string.stats), getResources().getDrawable(R.drawable.ic_action_trending_up)));
-        items.add(new NavigationItem(getString(R.string.myaccount), getResources().getDrawable(R.drawable.ic_action_account_box)));
-        items.add(new NavigationItem(getString(R.string.settings), getResources().getDrawable(R.drawable.ic_action_settings)));
+        items.add(new NavigationItem(getString(R.string.news), getResources().getDrawable(R.drawable.ic_news)));
+        items.add(new NavigationItem(getString(R.string.politics), getResources().getDrawable(R.drawable.ic_politics)));
+        items.add(new NavigationItem(getString(R.string.sports), getResources().getDrawable(R.drawable.ic_sport)));
+        items.add(new NavigationItem(getString(R.string.music), getResources().getDrawable(R.drawable.ic_music)));
+        items.add(new NavigationItem(getString(R.string.art), getResources().getDrawable(R.drawable.ic_art)));
+        items.add(new NavigationItem(getString(R.string.agriculture), getResources().getDrawable(R.drawable.ic_agriculture)));
+        items.add(new NavigationItem(getString(R.string.counties), getResources().getDrawable(R.drawable.ic_county)));
+        items.add(new NavigationItem(getString(R.string.notify), getResources().getDrawable(R.drawable.ic_action_error)));
+        items.add(new NavigationItem(getString(R.string.business), getResources().getDrawable(R.drawable.ic_business)));
+
+
+
+
         return items;
     }
 
@@ -239,9 +246,20 @@ public class NavigationDrawerFragment extends Fragment implements NavigationDraw
 
     public void setUserData(String user, String email, String avatar) {
         avatarContainer = (ImageView) mFragmentContainerView.findViewById(R.id.imgAvatar);
-        ((TextView) mFragmentContainerView.findViewById(R.id.txtUserEmail)).setText(email);
-        ((TextView) mFragmentContainerView.findViewById(R.id.txtUsername)).setText(user);
-        Picasso.with(getActivity()).load(avatar).placeholder(R.drawable.avatar).error(R.drawable.avatar).into(avatarContainer);
+        ((com.devspark.robototextview.widget.RobotoTextView) mFragmentContainerView.findViewById(R.id.txtUserEmail)).setText(email);
+        ((RobotoTextView) mFragmentContainerView.findViewById(R.id.txtUsername)).setText(user);
+        ImageLoader imageLoader = ImageLoader.getInstance();
+        DisplayImageOptions options = new DisplayImageOptions.Builder().cacheInMemory(true)
+                .cacheOnDisk(true).resetViewBeforeLoading(true)
+                .showImageForEmptyUri(R.drawable.placeholder)
+                .showImageOnFail(R.drawable.placeholder)
+                .imageScaleType(ImageScaleType.NONE)
+                .bitmapConfig(Bitmap.Config.ARGB_8888)
+                .showImageOnLoading(R.drawable.placeholder).build();
+
+        //download and display image from url
+        imageLoader.displayImage(avatar, avatarContainer, options);
+//        Picasso.with(getActivity()).load(avatar).placeholder(R.drawable.avatar).error(R.drawable.avatar).into(avatarContainer);
 //        avatarContainer.setImageDrawable(new RoundImage(avatar));
 
     }

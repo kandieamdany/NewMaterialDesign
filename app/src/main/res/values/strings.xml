@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">materiale</string>
+    <string name="app_name">DKA News</string>
     <string name="drawer_open">Menu opened</string>
     <string name="drawer_close">Menu closed</string>
     <string name="action_settings">Settings</string>
@@ -19,7 +19,7 @@
     <string name="btn_enter">Enter Main</string>
     <string name="prof_pic">profile picture</string>
 
-    <string name="action_refresh">Refresh Content</string>
+    <string name="action_refresh">Refresh</string>
     <string name="action_help">Help</string>
     <string name="action_feedback">Send Feedback</string>
 
@@ -66,6 +66,24 @@
     <string name="menu_color_scheme_2">Scheme #2</string>
     <string name="menu_color_scheme_3">Scheme #3</string>
     <string name="menu_refresh">refresh</string>
+    <string name="news">News</string>
+    <string name="politics">Politics</string>
+    <string name="sports">Sports</string>
+    <string name="music">Music</string>
+    <string name="art">Art and Culture</string>
+    <string name="agriculture">Agriculture</string>
+    <string name="counties">Counties</string>
+    <string name="btnRead">Read</string>
+    <string name="error">Check Internet Connection</string>
+    <string name="news_app">DKA News</string>
+    <string name="favorites">Favourites</string>
+    <string name="entermain">Proceed</string>
+    <string name="enterMain">Get Started</string>
+    <string name="notify">Notifications</string>
+    <string name="business">Business</string>
+    <string name="checkNetwork">Check Network Connection</string>
+    <string name="noFavourites">No Favourites</string>
+    <string name="noFavouritesYet">No Favourites</string>
 
 
 </resources>

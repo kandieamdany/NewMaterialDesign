@@ -1,35 +1,44 @@
 package com.smartdevelopers.kandie.nicedrawer;
 
 
+import android.content.Context;
 import android.content.Intent;
 import android.content.IntentSender;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
+import android.content.SharedPreferences;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
-
-
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
-import android.widget.TextView;
 import android.widget.Toast;
 
+import com.flaviofaria.kenburnsview.KenBurnsView;
+import com.flaviofaria.kenburnsview.Transition;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.google.android.gms.common.SignInButton;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.ResultCallback;
 import com.google.android.gms.common.api.Status;
+import com.google.android.gms.gcm.GoogleCloudMessaging;
 import com.google.android.gms.plus.Plus;
 import com.google.android.gms.plus.model.people.Person;
-import com.squareup.picasso.Picasso;
+import com.smartdevelopers.kandie.nicedrawer.Gcm.Util;
+import com.squareup.okhttp.OkHttpClient;
 
 import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.io.InputStream;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.util.concurrent.atomic.AtomicInteger;
+
+
+
 
 /**
  * Created by 4331 on 14/07/2015.
@@ -49,46 +58,77 @@ public class ActivityGplus extends AppCompatActivity implements View.OnClickList
     private boolean mIntentInProgress;
 
     private boolean mSignInClicked;
+    public static final String MyPREFERENCES = "MyPrefs" ;
 
     private ConnectionResult mConnectionResult;
 
     private SignInButton btnSignIn;
+    private Button btnEnter;
 
-    private Button btnSignOut, btnRevokeAccess,btnEnter,btnPicasso;
-    private ImageView imgProfilePic;
-    private TextView txtName, txtEmail;
-    private LinearLayout llProfileLayout;
-
-    Bitmap bitmap;
     String personPhotoUrl;
+    String personName;
+    String email;
+
+    GoogleCloudMessaging gcm;
+    AtomicInteger msgId = new AtomicInteger();
+    SharedPreferences prefs;
+    Context context;
+    String regid;
+    String msg;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.gplus_activity);
-
-        btnPicasso=(Button)findViewById(R.id.btn_picasso);
-        btnSignIn = (SignInButton) findViewById(R.id.btn_sign_in);
-        btnSignOut = (Button) findViewById(R.id.btn_sign_out);
-        btnRevokeAccess = (Button) findViewById(R.id.btn_revoke_access);
+        context = getApplicationContext();
         btnEnter=(Button) findViewById(R.id.btn_main);
-        imgProfilePic = (ImageView) findViewById(R.id.imgProfilePic);
-        txtName = (TextView) findViewById(R.id.txtName);
-        txtEmail = (TextView) findViewById(R.id.txtEmail);
-        llProfileLayout = (LinearLayout) findViewById(R.id.llProfile);
+        //Cloud Messaging
+        if(isUserRegistered(context)){
+            startActivity(new Intent(ActivityGplus.this,MainActivity.class));
+            finish();
+        }else {
+            // Initializing google plus api client
+            mGoogleApiClient = new GoogleApiClient.Builder(this)
+                    .addConnectionCallbacks(this)
+                    .addOnConnectionFailedListener(this).addApi(Plus.API)
+                    .addScope(Plus.SCOPE_PLUS_LOGIN).build();
+                /*
+        Adding KenBurns View
+        */
+            KenBurnsView kbv = (KenBurnsView) findViewById(R.id.imageBurn);
+            kbv.setTransitionListener(new KenBurnsView.TransitionListener() {
+                @Override
+                public void onTransitionStart(Transition transition) {
+                }
 
-        // Button click listeners
-        btnSignIn.setOnClickListener(this);
-        btnSignOut.setOnClickListener(this);
-        btnRevokeAccess.setOnClickListener(this);
-        btnEnter.setOnClickListener(this);
-        btnPicasso.setOnClickListener(this);
+                @Override
+                public void onTransitionEnd(Transition transition) {
 
-        // Initializing google plus api client
-        mGoogleApiClient = new GoogleApiClient.Builder(this)
-                .addConnectionCallbacks(this)
-                .addOnConnectionFailedListener(this).addApi(Plus.API)
-                .addScope(Plus.SCOPE_PLUS_LOGIN).build();
+                }
+            });
+            btnSignIn = (SignInButton) findViewById(R.id.btn_sign_in);
+
+
+
+            // Button click listeners
+            btnSignIn.setOnClickListener(this);
+            // Check device for Play Services APK. If check succeeds, proceed with
+            //  GCM registration.
+
+            if (checkPlayServices()) {
+                gcm = GoogleCloudMessaging.getInstance(this);
+                regid = getRegistrationId(context);
+
+                if (regid.isEmpty()) {
+                    registerInBackground();
+                }
+
+
+            } else {
+                Log.i("pavan", "No valid Google Play Services APK found.");
+            }
+        }
+
     }
 
     protected void onStart() {
@@ -111,32 +151,14 @@ public class ActivityGplus extends AppCompatActivity implements View.OnClickList
                 // Signin button clicked
                 signInWithGplus();
                 break;
-            case R.id.btn_sign_out:
-                // Signout button clicked
-                signOutFromGplus();
-                break;
-            case R.id.btn_revoke_access:
-                // Revoke access button clicked
-                revokeGplusAccess();
-                break;
             case R.id.btn_main:
                 //enter to the main activity
                 enterMain();
                 break;
-            case R.id.btn_picasso:
-                showpicasso();
+
         }
     }
 
-    private void showpicasso() {
-        Intent intent=new Intent(ActivityGplus.this,PicassoActivity.class);
-
-
-                intent.putExtra("picture", personPhotoUrl);
-
-                startActivity(intent);
-
-    }
 
     private void enterMain() {
         Intent intent=new Intent(getApplicationContext(),com.smartdevelopers.kandie.nicedrawer.MainActivity.class);
@@ -170,10 +192,21 @@ public class ActivityGplus extends AppCompatActivity implements View.OnClickList
     }
 
     private void signInWithGplus() {
+
         if (!mGoogleApiClient.isConnecting()) {
             mSignInClicked = true;
             resolveSignInError();
         }
+//        }else {
+//            //SnackBack
+//            SnackbarManager.show(
+//                    Snackbar.with(this)
+//                            .text(R.string.checkNetwork)
+//                            .textColor(Color.BLACK)
+//                            .color(Color.CYAN)
+//                            .duration(Snackbar.SnackbarDuration.LENGTH_SHORT));
+//            Log.v("ActivityGplus","Not online");
+//        }
         
     }
 
@@ -230,14 +263,11 @@ public class ActivityGplus extends AppCompatActivity implements View.OnClickList
     @Override
     public void onConnected(Bundle bundle) {
         mSignInClicked = false;
-        Toast.makeText(this, "User is connected!", Toast.LENGTH_LONG).show();
-
         // Get user's information
         getProfileInformation();
 
         // Update the UI after signin
         updateUI(true);
-
     }
 
     @Override
@@ -253,19 +283,11 @@ public class ActivityGplus extends AppCompatActivity implements View.OnClickList
     private void updateUI(boolean isSignedIn) {
         if (isSignedIn) {
             btnSignIn.setVisibility(View.GONE);
-            btnSignOut.setVisibility(View.VISIBLE);
-            btnRevokeAccess.setVisibility(View.VISIBLE);
             btnEnter.setVisibility(View.VISIBLE);
-            btnPicasso.setVisibility(View.VISIBLE);
 
-            llProfileLayout.setVisibility(View.VISIBLE);
         } else {
             btnSignIn.setVisibility(View.VISIBLE);
-            btnSignOut.setVisibility(View.GONE);
-            btnRevokeAccess.setVisibility(View.GONE);
             btnEnter.setVisibility(View.GONE);
-            btnPicasso.setVisibility(View.GONE);
-            llProfileLayout.setVisibility(View.GONE);
         }
     }
 
@@ -277,47 +299,29 @@ public class ActivityGplus extends AppCompatActivity implements View.OnClickList
             if (Plus.PeopleApi.getCurrentPerson(mGoogleApiClient) != null) {
                 Person currentPerson = Plus.PeopleApi
                         .getCurrentPerson(mGoogleApiClient);
-                String personName = currentPerson.getDisplayName();
+                personName = currentPerson.getDisplayName();
                 personPhotoUrl = currentPerson.getImage().getUrl();
                 String personGooglePlusProfile = currentPerson.getUrl();
-                String email = Plus.AccountApi.getAccountName(mGoogleApiClient);
+                email = Plus.AccountApi.getAccountName(mGoogleApiClient);
 
                 Log.e(TAG, "Name: " + personName + ", plusProfile: "
                         + personGooglePlusProfile + ", email: " + email
                         + ", Image: " + personPhotoUrl);
 
-                txtName.setText(personName);
-                txtEmail.setText(email);
-
-                // by default the profile url gives 50x50 px image only
-                // we can replace the value with whatever dimension we want by
-                // replacing sz=X
                 personPhotoUrl = personPhotoUrl.substring(0,
                         personPhotoUrl.length() - 2)
                         + PROFILE_PIC_SIZE;
 
-//                new LoadProfileImage(imgProfilePic).execute(personPhotoUrl);
-
-                Picasso.with(this).load(personPhotoUrl).into(imgProfilePic);
-
-//                imgProfilePic.setDrawingCacheEnabled(true);
-//
-//               bitmap=imgProfilePic.getDrawingCache();
-
-
-
-
+                sendRegistrationIdToBackend();
                 //putting extra information in the Intent
-                Intent intent=new Intent(ActivityGplus.this,MainActivity.class);
-                intent.putExtra("username",txtName.getText().toString());
-                intent.putExtra("mail",txtEmail.getText().toString());
-                intent.putExtra("picture", personPhotoUrl);
-                startActivity(intent);
-
-
+//                Intent intent=new Intent(ActivityGplus.this,MainActivity.class);
+//                intent.putExtra("username",personName);
+//                intent.putExtra("mail",email);
+//                intent.putExtra("picture", personPhotoUrl);
+//                startActivity(intent);
             } else {
                 Toast.makeText(getApplicationContext(),
-                        "Person information is null", Toast.LENGTH_LONG).show();
+                        "null", Toast.LENGTH_LONG).show();
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -325,34 +329,227 @@ public class ActivityGplus extends AppCompatActivity implements View.OnClickList
     }
 
     /**
-     * Background Async task to load user profile picture from url
-     * */
-    private class LoadProfileImage extends AsyncTask<String, Void, Bitmap> {
-        ImageView bmImage;
-
-        public LoadProfileImage(ImageView bmImage) {
-            this.bmImage = bmImage;
-        }
-
-        protected Bitmap doInBackground(String... urls) {
-            String urldisplay = urls[0];
-            Bitmap mIcon11 = null;
-            try {
-                InputStream in = new java.net.URL(urldisplay).openStream();
-                mIcon11 = BitmapFactory.decodeStream(in);
-            } catch (Exception e) {
-                Log.e("Error", e.getMessage());
-                e.printStackTrace();
+     * Google Cloud Messaging
+     */
+    private boolean checkPlayServices() {
+        int resultCode = GooglePlayServicesUtil.isGooglePlayServicesAvailable(this);
+        if (resultCode != ConnectionResult.SUCCESS) {
+            if (GooglePlayServicesUtil.isUserRecoverableError(resultCode)) {
+                GooglePlayServicesUtil.getErrorDialog(resultCode, this,
+                        Util.PLAY_SERVICES_RESOLUTION_REQUEST).show();
+            } else {
+                Log.i(TAG, "This device is not supported.");
+                finish();
             }
-            return mIcon11;
+            return false;
         }
-
-        protected void onPostExecute(Bitmap result) {
-            bmImage.setImageBitmap(result);
+        return true;
+    }
+    private String getRegistrationId(Context context) {
+        final SharedPreferences prefs = getGCMPreferences(context);
+        String registrationId = prefs.getString(Util.PROPERTY_REG_ID, "");
+        if (registrationId.isEmpty()) {
+            Log.i(TAG, "Registration not found.");
+            return "";
         }
+        // Check if app was updated; if so, it must clear the registration ID
+        // since the existing registration ID is not guaranteed to work with
+        // the new app version.
+        int registeredVersion = prefs.getInt(Util.PROPERTY_APP_VERSION, Integer.MIN_VALUE);
+        int currentVersion = getAppVersion(context);
+        if (registeredVersion != currentVersion) {
+            Log.i(TAG, "App version changed.");
+            return "";
+        }
+        return registrationId;
     }
 
 
+    private boolean isUserRegistered(Context context) {
+        final SharedPreferences prefs = getGCMPreferences(context);
+        String User_name = prefs.getString(Util.USER_NAME, "");
+        if (User_name.isEmpty()) {
+            Log.i(TAG, "Registration not found.");
+            return false;
+        }
+
+        return true;
+    }
+    private void registerInBackground() {
+        new AsyncTask() {
+            @Override
+            protected String doInBackground(Object[] params) {
+                try {
+                    if (gcm == null) {
+                        gcm = GoogleCloudMessaging.getInstance(ActivityGplus.this);
+                    }
+                    regid = gcm.register(Util.SENDER_ID);
+                    msg = "Device registered, registration ID=" + regid;
+                    // You should send the registration ID to your server over HTTP,
+                    //GoogleCloudMessaging gcm;/ so it can use GCM/HTTP or CCS to send messages to your app.
+                    // The request to your server should be authenticated if your app
+                    // is using accounts.
+                    // sendRegistrationIdToBackend();
+
+                    // For this demo: we don't need to send it because the device
+                    // will send upstream messages to a server that echo back the
+                    // message using the 'from' address in the message.
+
+                    // Persist the registration ID - no need to register again.
+                    storeRegistrationId(context, regid);
+                } catch (IOException ex) {
+                    msg = "Error :" + ex.getMessage();
+                    // If there is an error, don't just keep trying to register.
+                    // Require the user to click a button again, or perform
+                    // exponential back-off.
+                }
+                return msg;
+            }
+        }.execute();
+
+    }
+
+    private static int getAppVersion(Context context) {
+        try {
+            PackageInfo packageInfo = context.getPackageManager()
+                    .getPackageInfo(context.getPackageName(), 0);
+            return packageInfo.versionCode;
+        } catch (PackageManager.NameNotFoundException e) {
+            // should never happen
+            throw new RuntimeException("Could not get package name: " + e);
+        }
+    }
+
+    private void storeRegistrationId(Context context, String regId) {
+        final SharedPreferences prefs = getGCMPreferences(context);
+        int appVersion = getAppVersion(context);
+        Log.i(TAG, "Saving regId on app version " + appVersion);
+        SharedPreferences.Editor editor = prefs.edit();
+        editor.putString(Util.PROPERTY_REG_ID, regId);
+        editor.putInt(Util.PROPERTY_APP_VERSION, appVersion);
+        editor.commit();
+    }
+
+    private void storeUserDetails(Context context) {
+        final SharedPreferences prefs = getGCMPreferences(context);
+        int appVersion = getAppVersion(context);
+        Log.i(TAG, "Saving regId on app version " + appVersion);
+        SharedPreferences.Editor editor = prefs.edit();
+        editor.putString(Util.EMAIL,email);
+        editor.putString(Util.USER_NAME, personName);
+//        editor.putString(Util.USER_PHOTO,personPhotoUrl);
+        editor.commit();
+    }
+    private SharedPreferences getGCMPreferences(Context context) {
+        // This sample app persists the registration ID in shared preferences, but
+        // how you store the registration ID in your app is up to you.
+        return getSharedPreferences(ActivityGplus.class.getSimpleName(),
+                Context.MODE_PRIVATE);
+    }
+    //  private RequestQueue mRequestQueue;
+    private void sendRegistrationIdToBackend() {
+        // Your implementation here.
+        new SendGcmToServer().execute();
+// Access the RequestQueue through your singleton class.
+        // AppController.getInstance().addToRequestQueue(jsObjRequest, "jsonRequest");
+    }
+
+    private class SendGcmToServer extends AsyncTask<String, Void, String> {
+
+        @Override
+        protected void onPreExecute() {
+            // TODO Auto-generated method stub
+            super.onPreExecute();
+        }
+
+        @Override
+        protected String doInBackground(String... params) {
+            // TODO Auto-generated method stub
+
+            String url = Util.register_url+"?name="+personName+"&email="+email+"&regId="+regid;
+            Log.i("pavan", "url" + url);
+
+            OkHttpClient client_for_getMyFriends = new OkHttpClient();
+
+            String response = null;
+            // String response=Utility.callhttpRequest(url);
+
+            try {
+                url = url.replace(" ", "%20");
+                response = callOkHttpRequest(new URL(url),
+                        client_for_getMyFriends);
+                for (String subString : response.split("<script", 2)) {
+                    response = subString;
+                    break;
+                }
+            } catch (MalformedURLException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            } catch (IOException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
+
+
+            return response;
+        }
+
+        @Override
+        protected void onPostExecute(String result) {
+            // TODO Auto-generated method stub
+            super.onPostExecute(result);
+            //Toast.makeText(context,"response "+result,Toast.LENGTH_LONG).show();
+
+            if (result != null) {
+                if (result.equals("success")) {
+                    storeUserDetails(context);
+                    Intent intent=new Intent(ActivityGplus.this,MainActivity.class);
+                    prefs=getApplicationContext().getSharedPreferences("DETAILS",MODE_PRIVATE);
+                    SharedPreferences.Editor editor=prefs.edit();
+                    editor.putString("gUsername",personName);
+                    editor.putString("gMail",email);
+                    editor.putString("gPicture",personPhotoUrl);
+                    editor.commit();
+//                    intent.putExtra("username",personName);
+//                    intent.putExtra("mail", email);
+//                    intent.putExtra("picture", personPhotoUrl);
+                    startActivity(intent);
+                    finish();
+                } else {
+                    Toast.makeText(context, "Try Again" + result, Toast.LENGTH_LONG).show();
+                }
+            }else{
+                Toast.makeText(context, "Check net connection ", Toast.LENGTH_LONG).show();
+            }
+        }
+    }
+    // Http request using OkHttpClient
+    String callOkHttpRequest(URL url, OkHttpClient tempClient)
+            throws IOException {
+
+        HttpURLConnection connection = tempClient.open(url);
+
+        connection.setConnectTimeout(40000);
+        InputStream in = null;
+        try {
+            // Read the response.
+            in = connection.getInputStream();
+            byte[] response = readFully(in);
+            return new String(response, "UTF-8");
+        } finally {
+            if (in != null)
+                in.close();
+        }
+    }
+
+    byte[] readFully(InputStream in) throws IOException {
+        ByteArrayOutputStream out = new ByteArrayOutputStream();
+        byte[] buffer = new byte[1024];
+        for (int count; (count = in.read(buffer)) != -1;) {
+            out.write(buffer, 0, count);
+        }
+        return out.toByteArray();
+    }
 
 
 }

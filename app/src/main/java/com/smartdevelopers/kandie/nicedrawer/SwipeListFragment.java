@@ -46,16 +46,7 @@ public class SwipeListFragment extends SwipeRefreshListFragment {
          * Create an ArrayAdapter to contain the data for the ListView. Each item in the ListView
          * uses the system-defined simple_list_item_1 layout that contains one TextView.
          */
-//        ListAdapter adapter = new ArrayAdapter<String>(
-//                getActivity(),
-//                android.R.layout.simple_list_item_1,
-//                android.R.id.text1,
-//                Cheeses.randomList(LIST_ITEM_COUNT));
-//
-//        // Set the adapter between the ListView and its backing data.
-//        setListAdapter(adapter);
 
-//        ListView listView=(ListView) getActivity().findViewById(R.id.swipeRefresh);
 
 
         ListAdapter adapter = new ArrayAdapter<String>(getActivity(),R.layout.swipe_refresh_layout,R.id.swipe,Cheeses.randomList(LIST_ITEM_COUNT));

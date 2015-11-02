@@ -10,7 +10,8 @@
 
     <color name="myPrimaryColor">#e62117</color>
     <color name="myPrimaryDarkColor">#c31c13</color>
-    <color name="myAccentColor">#FF4081</color>
+    <color name="myAccentColor">#E0E0E0</color>
+
     <color name="myDrawerBackground">#FFF</color>
     <color name="myWindowBackground">#FFF</color>
     <color name="myTextPrimaryColor">#212121</color>
@@ -45,4 +46,13 @@
     <color name="color_scheme_3_2">#99CC00</color>
     <color name="color_scheme_3_3">#8ABD00</color>
     <color name="color_scheme_3_4">#7CAF00</color>
+    <color name="myBtnColor">#424242</color>
+    <color name="myGrey">#FAFAFA</color>
+    <color name="myTeal">#4DB6AC</color>
+    <color name="myCyan">#B2EBF2</color>
+    <color name="myRed">#F44336</color>
+    <color name="myLime">#F0F4C3</color>
+    <color name="myToolbar">#F44336</color>
+    <color name="myLightRed">#E57373</color>
+    <color name="myNetwork">#EF5350</color>
 </resources>

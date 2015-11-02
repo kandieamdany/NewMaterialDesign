@@ -1,79 +1,50 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical" android:layout_width="match_parent"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
     android:layout_height="match_parent">
+
+
+
     <LinearLayout
-        android:id="@+id/llProfile"
         android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="20dp"
-        android:orientation="horizontal"
-        android:weightSum="3"
-        android:visibility="gone">
-
-        <ImageView
-            android:id="@+id/imgProfilePic"
-            android:layout_width="80dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:contentDescription="@string/prof_pic"/>
-
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="10dp"
-            android:layout_marginStart="10dp"
-            android:orientation="vertical"
-            android:layout_weight="2" >
-
-            <TextView
-                android:id="@+id/txtName"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:padding="5dp"
-                android:textSize="20sp" />
-
-            <TextView
-                android:id="@+id/txtEmail"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:padding="5dp"
-                android:textSize="18sp" />
-        </LinearLayout>
+        android:layout_height="fill_parent"
+        android:orientation="vertical">
+        <com.flaviofaria.kenburnsview.KenBurnsView
+            android:id="@+id/imageBurn"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:src="@drawable/burns"
+            />
     </LinearLayout>
+
+
 
     <com.google.android.gms.common.SignInButton
         android:id="@+id/btn_sign_in"
-        android:layout_width="fill_parent"
+        android:layout_width="300dp"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="20dp"/>
-
-    <Button
-        android:id="@+id/btn_sign_out"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:text="@string/btn_logout_from_google"
-        android:visibility="gone"
-        android:layout_marginBottom="10dp"/>
-
-    <Button
-        android:id="@+id/btn_revoke_access"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:text="@string/btn_revoke_access"
-        android:visibility="gone" />
-    <Button
+        android:layout_marginBottom="20dp"
+        android:layout_centerInParent="true"
+        />
+    <com.rey.material.widget.Button
         android:id="@+id/btn_main"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:text="@string/btn_enter"
-        android:visibility="gone" />
-    <Button
-        android:id="@+id/btn_picasso"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:text="picasso"
-        android:visibility="gone" />
+        style="@style/Material.Drawable.Ripple.Touch"
+        android:layout_width="300dp"
+        android:layout_height="50dp"
+        android:layout_marginTop="5dp"
+        android:layout_below="@+id/btn_sign_in"
+        android:text="@string/enterMain"
+        android:textColor="#424242"
+        android:layout_centerHorizontal="true"
+        app:rd_enable="true"
+        android:textSize="12dp"
+        app:rd_backgroundColor="@color/myTeal"
+        app:rd_rippleColor="@color/myRed"
+        />
 
 
-</LinearLayout>
+
+
+</RelativeLayout>

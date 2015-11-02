@@ -2,17 +2,28 @@ package com.smartdevelopers.kandie.nicedrawer;
 
 
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.widget.Toolbar;
-
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import com.smartdevelopers.kandie.nicedrawer.news.AgricultureFragment;
+import com.smartdevelopers.kandie.nicedrawer.news.ArtandCultureFragment;
+import com.smartdevelopers.kandie.nicedrawer.news.BusinessFragment;
+import com.smartdevelopers.kandie.nicedrawer.news.CountiesFragment;
+import com.smartdevelopers.kandie.nicedrawer.news.FavoriteListFragment;
+import com.smartdevelopers.kandie.nicedrawer.news.MusicFragment;
+import com.smartdevelopers.kandie.nicedrawer.news.NewsFragment;
+import com.smartdevelopers.kandie.nicedrawer.news.NotificationFragment;
+import com.smartdevelopers.kandie.nicedrawer.news.PoliticsFragment;
+import com.smartdevelopers.kandie.nicedrawer.news.SportsFragment;
 
 
 public class MainActivity extends ActionBarActivity
@@ -29,6 +40,8 @@ public class MainActivity extends ActionBarActivity
     String user_photo_url;
 
     Fragment fragment;
+    FavoriteListFragment  favListFragment;
+    SharedPreferences preferences;
 
 
 
@@ -38,14 +51,24 @@ public class MainActivity extends ActionBarActivity
         setContentView(R.layout.activity_main);
         mToolbar = (Toolbar) findViewById(R.id.toolbar_actionbar);
         setSupportActionBar(mToolbar);
+        assert getSupportActionBar()!=null;
+        //getSupportActionBar().setHomeAsEnabled(true); for appAppCompactActivity
+        getSupportActionBar().setElevation(0);
+
+        //Shared preference for Gmail
+
 
         //settings default
         PreferenceManager.setDefaultValues(this,R.xml.settings,false);
 
-        intent=getIntent();
-        user_name=intent.getStringExtra("username");
-        user_email=intent.getStringExtra("mail");
-        user_photo_url=intent.getStringExtra("picture");
+//        intent=getIntent();
+//        user_name=intent.getStringExtra("username");
+//        user_email=intent.getStringExtra("mail");
+//        user_photo_url=intent.getStringExtra("picture");
+        preferences=getApplicationContext().getSharedPreferences("DETAILS",MODE_PRIVATE);
+        user_name=preferences.getString("gUsername", "");
+        user_email=preferences.getString("gMail", "");
+        user_photo_url=preferences.getString("gPicture","");
 
 
         mNavigationDrawerFragment = (NavigationDrawerFragment)
@@ -55,7 +78,7 @@ public class MainActivity extends ActionBarActivity
         mNavigationDrawerFragment.setup(R.id.fragment_drawer, (DrawerLayout) findViewById(R.id.drawer), mToolbar);
         // populate the navigation drawer
 
-            mNavigationDrawerFragment.setUserData(user_name, user_email, user_photo_url);
+            mNavigationDrawerFragment.setUserData(user_name, user_email,  user_photo_url);
 
 
 
@@ -70,44 +93,84 @@ public class MainActivity extends ActionBarActivity
         String title=getString(R.string.app_name);
 
         switch (position) {
-            case 0: //Swipe Refresh Activity//todo
+            case 0: //News Fragment//todo
 
-                fragment=new SwipeListFragment();
-                fragment=getSupportFragmentManager().findFragmentByTag(SwipeListFragment.TAG);
+                fragment=new NewsFragment();
+                fragment=getSupportFragmentManager().findFragmentByTag(NewsFragment.TAG);
                 if (fragment==null){
-                    fragment=new SwipeListFragment();
+                    fragment=new NewsFragment();
                 }
-                getSupportFragmentManager().beginTransaction().replace(R.id.container,fragment,SwipeListFragment.TAG).commit();
+                getSupportFragmentManager().beginTransaction().replace(R.id.container,fragment,NewsFragment.TAG).commit();
 
                 break;
-            case 1: //stats
+            case 1: //Politics Fragment//todo
 
-                fragment=new StatsFragment();
+                fragment=new PoliticsFragment();
 
-                fragment = getSupportFragmentManager().findFragmentByTag(StatsFragment.TAG);
+                fragment = getSupportFragmentManager().findFragmentByTag(PoliticsFragment.TAG);
                 if (fragment == null) {
-                    fragment = new StatsFragment();
+                    fragment = new PoliticsFragment();
 
                 }
-                getSupportFragmentManager().beginTransaction().replace(R.id.container, fragment, StatsFragment.TAG).commit();
+                getSupportFragmentManager().beginTransaction().replace(R.id.container, fragment, PoliticsFragment.TAG).commit();
                 break;
-            case 2: //my account //todo
-                fragment=new CountryActivity();
-                fragment=getSupportFragmentManager().findFragmentByTag(CountryActivity.TAG);
+            case 2: //Sports Fragment//todo
+                fragment=new SportsFragment();
+                fragment=getSupportFragmentManager().findFragmentByTag(SportsFragment.TAG);
                 if(fragment==null){
-                    fragment=new CountryActivity();
+                    fragment=new SportsFragment();
                 }
-                getSupportFragmentManager().beginTransaction().replace(R.id.container,fragment,CountryActivity.TAG).commit();
+                getSupportFragmentManager().beginTransaction().replace(R.id.container,fragment,SportsFragment.TAG).commit();
                 break;
-            case 3: //Tabs //todo
-                fragment=new TabsFragment();
-                fragment=getSupportFragmentManager().findFragmentByTag(TabsFragment.TAG);
+            case 3: //Music Fragment//todo
+                fragment=new MusicFragment();
+                fragment=getSupportFragmentManager().findFragmentByTag(MusicFragment.TAG);
                 if(fragment==null){
-                    fragment=new TabsFragment();
+                    fragment=new MusicFragment();
                 }
-                getSupportFragmentManager().beginTransaction().replace(R.id.container,fragment,TabsFragment.TAG).commit();
+                getSupportFragmentManager().beginTransaction().replace(R.id.container,fragment,MusicFragment.TAG).commit();
 //                Intent intent=new Intent(getApplicationContext(),com.smartdevelopers.kandie.nicedrawer.TabsActivity.class);
 //                startActivity(intent);
+                break;
+            case 4: //Art and Culture  Fragment//todo
+                fragment=new ArtandCultureFragment();
+                fragment=getSupportFragmentManager().findFragmentByTag(ArtandCultureFragment.TAG);
+                if(fragment==null){
+                    fragment=new ArtandCultureFragment();
+                }
+                getSupportFragmentManager().beginTransaction().replace(R.id.container,fragment,ArtandCultureFragment.TAG).commit();
+                break;
+            case 5: //Agriculture Fragment//todo
+                fragment=new AgricultureFragment();
+                fragment=getSupportFragmentManager().findFragmentByTag(AgricultureFragment.TAG);
+                if(fragment==null){
+                    fragment=new AgricultureFragment();
+                }
+                getSupportFragmentManager().beginTransaction().replace(R.id.container,fragment,AgricultureFragment.TAG).commit();
+                break;
+            case 6: //Counties Fragment//todo
+                fragment=new CountiesFragment();
+                fragment=getSupportFragmentManager().findFragmentByTag(CountiesFragment.TAG);
+                if(fragment==null){
+                    fragment=new CountiesFragment();
+                }
+                getSupportFragmentManager().beginTransaction().replace(R.id.container,fragment,CountiesFragment.TAG).commit();
+                break;
+            case 7: //Notification Fragment//todo
+                fragment=new NotificationFragment();
+                fragment=getSupportFragmentManager().findFragmentByTag(NotificationFragment.TAG);
+                if(fragment==null){
+                    fragment=new NotificationFragment();
+                }
+                getSupportFragmentManager().beginTransaction().replace(R.id.container,fragment,NotificationFragment.TAG).commit();
+                break;
+            case 8: //Notification Fragment//todo
+                fragment=new BusinessFragment();
+                fragment=getSupportFragmentManager().findFragmentByTag(BusinessFragment.TAG);
+                if(fragment==null){
+                    fragment=new BusinessFragment();
+                }
+                getSupportFragmentManager().beginTransaction().replace(R.id.container,fragment,BusinessFragment.TAG).commit();
                 break;
             default:
                 break;
@@ -146,28 +209,18 @@ public class MainActivity extends ActionBarActivity
 
         int id = item.getItemId();
         switch (id){
-            case R.id.action_refresh:Bundle data_Bundle=new Bundle();
+            case R.id.menu_favorites:Bundle data_Bundle=new Bundle();
                 data_Bundle.putInt("id", 0);
                 //Refresh content
+                favListFragment = new FavoriteListFragment();
+                this.getSupportFragmentManager().beginTransaction().replace(R.id.container,favListFragment).commit();
                 break;
 
             case R.id.action_settings:Bundle bundle=new Bundle();
                 bundle.putInt("id", 1);
-                Intent intent=new Intent(getApplicationContext(),com.smartdevelopers.kandie.nicedrawer.SettingsFragment.class);
-                intent.putExtras(bundle);
-                startActivity(intent);
-                //Settings
-//                fragment=new SettingsFragment();
-                break;
-            case R.id.action_help:Bundle bundle1=new Bundle();
-                bundle1.putInt("id", 2);
-                //Help
-
-                break;
-            case R.id.action_feedback:Bundle bundle2=new Bundle();
-                bundle2.putInt("id", 1);
-                //Feedback
-
+                Intent i=new Intent(getApplicationContext(),com.smartdevelopers.kandie.nicedrawer.SettingsFragment.class);
+                i.putExtras(bundle);
+                startActivity(i);
                 break;
             default:
                 break;
@@ -178,11 +231,6 @@ public class MainActivity extends ActionBarActivity
 
         else
             Log.e("error", "cannot create fragment");
-
-        //noinspection SimplifiableIfStatement
-//        if (id == R.id.action_settings) {
-//            return true;
-//        }
 
         return super.onOptionsItemSelected(item);
     }
