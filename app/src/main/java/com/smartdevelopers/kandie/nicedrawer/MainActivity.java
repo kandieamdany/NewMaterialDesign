@@ -13,6 +13,7 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.Toast;
 
 import com.smartdevelopers.kandie.nicedrawer.news.AgricultureFragment;
 import com.smartdevelopers.kandie.nicedrawer.news.ArtandCultureFragment;
@@ -34,6 +35,7 @@ public class MainActivity extends ActionBarActivity
      */
     private NavigationDrawerFragment mNavigationDrawerFragment;
     private Toolbar mToolbar;
+    private static long back_pressed;
     Intent intent;
     String user_name;
     String user_email;
@@ -183,8 +185,11 @@ public class MainActivity extends ActionBarActivity
     public void onBackPressed() {
         if (mNavigationDrawerFragment.isDrawerOpen())
             mNavigationDrawerFragment.closeDrawer();
-        else
+        else if(back_pressed+2000>System.currentTimeMillis())
             super.onBackPressed();
+        else Toast.makeText(getBaseContext(),"Press again to exit",Toast.LENGTH_SHORT).show();
+        back_pressed=System.currentTimeMillis();
+
     }
 
 
